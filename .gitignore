@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Environment variables — NEVER push this
+backend/.env
+ml-service/.env
+frontend/.env
+frontend/.env.local
+
+# Prisma
+backend/prisma/migrations/
+
+# Build outputs
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python (for ml-service later)
+ml-service/__pycache__/
+ml-service/*.pyc
+ml-service/venv/
+ml-service/.venv/

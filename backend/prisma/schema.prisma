@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String
+  currency     String    @default("INR")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  expenses     Expense[]
+  budgets      Budget[]
+  alerts       Alert[]
+
+  @@map("users")
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  amount      Float
+  description String
+  category    String   @default("Other")
+  confidence  Float?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("expenses")
+}
+
+model Budget {
+  id          String  @id @default(uuid())
+  userId      String  @map("user_id")
+  category    String
+  limitAmount Float   @map("limit_amount")
+  month       Int
+  year        Int
+
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alerts      Alert[]
+
+  @@unique([userId, category, month, year])
+  @@map("budgets")
+}
+
+model Alert {
+  id       String   @id @default(uuid())
+  userId   String   @map("user_id")
+  budgetId String   @map("budget_id")
+  type     String
+  message  String   @default("")
+  isRead   Boolean  @default(false) @map("is_read")
+  sentAt   DateTime @default(now()) @map("sent_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  budget   Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@map("alerts")
+}
