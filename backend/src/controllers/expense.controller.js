@@ -10,6 +10,24 @@ const expenseSchema = z.object({
   date: z.string().datetime().optional()
 })
 
+// ── ML categorizer call ────────────────────────────────────────
+const categorizeExpense = async (description) => {
+  try {
+    const response = await fetch(`${process.env.ML_SERVICE_URL}/categorize`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description }),
+      signal: AbortSignal.timeout(3000) // 3 second timeout
+    })
+    if (!response.ok) return { category: 'Other', confidence: null }
+    const data = await response.json()
+    return { category: data.category, confidence: data.confidence }
+  } catch {
+    // ML service down — fallback to 'Other', don't crash the request
+    return { category: 'Other', confidence: null }
+  }
+}
+
 const getExpenses = async (req, res) => {
   const { category, from, to, page = 1, limit = 20 } = req.query
   const where = { userId: req.user.userId }
@@ -72,9 +90,16 @@ const createExpense = async (req, res) => {
   }
   const { amount, description, category, date } = result.data
   try {
-    // Phase 2: ML auto-categorization will be wired in here
-    let finalCategory = category || 'Other'
+    // ── Phase 2: ML auto-categorization ───────────────────────
+    let finalCategory = category  // user manually picked a category
     let confidence = null
+
+    if (!category) {
+      // No category provided — ask ML service
+      const ml = await categorizeExpense(description)
+      finalCategory = ml.category
+      confidence = ml.confidence
+    }
 
     const expense = await prisma.expense.create({
       data: {
