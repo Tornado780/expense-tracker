@@ -5,3 +5,6 @@ numpy==2.1.1
 pydantic==2.9.2
  
 #python -m uvicorn main:app --reload --port 8000
+
+#fronted:
+#npm run dev -- --port 3001
