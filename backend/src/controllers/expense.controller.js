@@ -1,5 +1,6 @@
 const { z } = require('zod')
 const prisma = require('../lib/prisma')
+const { checkBudgetAndAlert } = require('./budget.controller')
 
 const CATEGORIES = ['Food & Dining', 'Transport', 'Entertainment', 'Utilities', 'Health', 'Other']
 
@@ -10,20 +11,18 @@ const expenseSchema = z.object({
   date: z.string().datetime().optional()
 })
 
-// ── ML categorizer call ────────────────────────────────────────
 const categorizeExpense = async (description) => {
   try {
     const response = await fetch(`${process.env.ML_SERVICE_URL}/categorize`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ description }),
-      signal: AbortSignal.timeout(3000) // 3 second timeout
+      signal: AbortSignal.timeout(3000)
     })
     if (!response.ok) return { category: 'Other', confidence: null }
     const data = await response.json()
     return { category: data.category, confidence: data.confidence }
   } catch {
-    // ML service down — fallback to 'Other', don't crash the request
     return { category: 'Other', confidence: null }
   }
 }
@@ -42,10 +41,8 @@ const getExpenses = async (req, res) => {
   try {
     const [expenses, total] = await Promise.all([
       prisma.expense.findMany({
-        where,
-        orderBy: { date: 'desc' },
-        skip: (pageNum - 1) * limitNum,
-        take: limitNum
+        where, orderBy: { date: 'desc' },
+        skip: (pageNum - 1) * limitNum, take: limitNum
       }),
       prisma.expense.count({ where })
     ])
@@ -90,29 +87,30 @@ const createExpense = async (req, res) => {
   }
   const { amount, description, category, date } = result.data
   try {
-    // ── Phase 2: ML auto-categorization ───────────────────────
-    let finalCategory = category  // user manually picked a category
+    // Phase 2: ML auto-categorization
+    let finalCategory = category
     let confidence = null
-
     if (!category) {
-      // No category provided — ask ML service
       const ml = await categorizeExpense(description)
       finalCategory = ml.category
       confidence = ml.confidence
     }
 
+    const expenseDate = date ? new Date(date) : new Date()
     const expense = await prisma.expense.create({
       data: {
         userId: req.user.userId,
-        amount,
-        description,
+        amount, description,
         category: finalCategory,
         confidence,
-        date: date ? new Date(date) : new Date()
+        date: expenseDate
       }
     })
 
-    // Phase 3: Budget alert check will be wired in here
+    // Phase 3: Budget alert check — fire and forget, never blocks response
+    const month = expenseDate.getMonth() + 1
+    const year = expenseDate.getFullYear()
+    checkBudgetAndAlert(req.user.userId, finalCategory, month, year)
 
     res.status(201).json(expense)
   } catch (err) {
