@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
+import AlertBell from '@/components/AlertBell'
 
 const links = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -37,9 +38,13 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500 hidden md:block">
+          <AlertBell />
+          <Link
+            href="/profile"
+            className="text-sm text-gray-500 hover:text-gray-900 transition-colors hidden md:block"
+          >
             {user?.name}
-          </span>
+          </Link>
           <button
             onClick={logout}
             className="text-sm text-gray-500 hover:text-gray-900 transition-colors"

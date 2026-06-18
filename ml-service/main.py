@@ -45,6 +45,7 @@ TRAINING_DATA = [
     ("canteen food", "Food & Dining"),
     ("mess fees", "Food & Dining"),
     ("eating out", "Food & Dining"),
+    ("Eating Ice Cream", "Food & Dining"),
 
     # Transport
     ("uber ride", "Transport"),
