@@ -8,7 +8,7 @@ import ExpenseList from '@/components/ExpenseList'
 import api from '@/lib/api'
 
 export default function ExpensesPage() {
-  const { user, loading: authLoading, formatAmount } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const router = useRouter()
 
   const [expenses, setExpenses] = useState([])
@@ -70,14 +70,14 @@ export default function ExpensesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Expenses</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">Expenses</h1>
             <p className="text-sm text-gray-500 mt-1">Track and manage all your spending</p>
           </div>
-          <div className="flex gap-3">
-            <button onClick={handleExport} className="btn-secondary text-sm flex items-center gap-1.5">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <button onClick={handleExport} className="btn-secondary text-sm flex items-center justify-center gap-1.5">
               📥 Export CSV
             </button>
             <ExpenseForm onSuccess={fetchExpenses} />

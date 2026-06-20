@@ -49,8 +49,8 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="max-w-md mx-auto px-6 py-12">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Profile</h1>
+      <main className="max-w-md mx-auto px-4 md:px-6 py-8 md:py-12">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Profile</h1>
         <p className="text-sm text-gray-500 mb-8">Update your name and preferred currency</p>
 
         <div className="card">

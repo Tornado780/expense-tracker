@@ -28,7 +28,7 @@ app.use('/api/expenses', expenseRoutes)
 app.use('/api/budgets', budgetRoutes)
 app.use('/api/alerts', alertRoutes)
 
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 

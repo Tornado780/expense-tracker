@@ -16,14 +16,12 @@ export default function AlertBell() {
     } catch {}
   }
 
-  // Poll every 30 seconds
   useEffect(() => {
     fetchAlerts()
     const interval = setInterval(fetchAlerts, 30000)
     return () => clearInterval(interval)
   }, [])
 
-  // Close on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -63,7 +61,7 @@ export default function AlertBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-10 w-80 bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden">
+        <div className="fixed sm:absolute left-2 right-2 sm:left-auto sm:right-0 top-14 sm:top-10 w-auto sm:w-80 bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-50 flex items-center justify-between">
             <p className="text-sm font-semibold text-gray-900">Alerts</p>
             {alerts.length > 0 && (

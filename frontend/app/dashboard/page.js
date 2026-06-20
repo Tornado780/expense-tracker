@@ -56,19 +56,19 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">
             Good {getGreeting()}, {user?.name?.split(' ')[0]} 👋
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-gray-500 text-xs md:text-sm mt-1">
             {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
 
         {/* Top row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-6">
           <SummaryCard summary={summary} loading={loading} />
           <div className="md:col-span-2">
             <CategoryPieChart byCategory={summary?.byCategory} loading={loading} />
@@ -76,7 +76,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Bottom row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <TrendLineChart expenses={expenses} loading={loading} />
 
           {/* Recent Expenses */}
@@ -109,14 +109,14 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {recentExpenses.map(e => (
-                  <div key={e.id} className="flex items-center justify-between py-1">
-                    <div className="flex items-center gap-3 min-w-0">
+                  <div key={e.id} className="flex items-center justify-between py-1 gap-2">
+                    <div className="flex items-center gap-2 md:gap-3 min-w-0">
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${CATEGORY_COLORS[e.category]}`}>
                         {e.category}
                       </span>
                       <span className="text-sm text-gray-700 truncate">{e.description}</span>
                     </div>
-                    <span className="text-sm font-semibold text-gray-900 ml-3 shrink-0">
+                    <span className="text-sm font-semibold text-gray-900 shrink-0">
                       {formatAmount(e.amount)}
                     </span>
                   </div>

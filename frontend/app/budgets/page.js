@@ -78,16 +78,17 @@ export default function BudgetsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Budgets</h1>
-            <p className="text-sm text-gray-500 mt-1">Set monthly spending limits per category</p>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* Month picker */}
+      <main className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8">
+        <div className="mb-6">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Budgets</h1>
+          <p className="text-sm text-gray-500 mt-1">Set monthly spending limits per category</p>
+        </div>
+
+        {/* Controls row - stacks on mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-6">
+          <div className="flex gap-2">
             <select
-              className="input w-auto text-sm"
+              className="input w-1/2 sm:w-auto text-sm"
               value={month}
               onChange={e => setMonth(parseInt(e.target.value))}
             >
@@ -98,26 +99,26 @@ export default function BudgetsPage() {
               ))}
             </select>
             <select
-              className="input w-auto text-sm"
+              className="input w-1/2 sm:w-auto text-sm"
               value={year}
               onChange={e => setYear(parseInt(e.target.value))}
             >
               {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            {availableCategories.length > 0 && (
-              <button onClick={() => setShowForm(!showForm)} className="btn-primary text-sm">
-                + Add Budget
-              </button>
-            )}
           </div>
+          {availableCategories.length > 0 && (
+            <button onClick={() => setShowForm(!showForm)} className="btn-primary text-sm sm:ml-auto">
+              + Add Budget
+            </button>
+          )}
         </div>
 
         {/* Add budget form */}
         {showForm && (
           <div className="card mb-6 border-indigo-100">
             <h3 className="font-semibold text-gray-900 mb-4">New Budget</h3>
-            <form onSubmit={handleAdd} className="flex flex-wrap gap-3 items-end">
-              <div className="flex-1 min-w-40">
+            <form onSubmit={handleAdd} className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:items-end">
+              <div className="flex-1 sm:min-w-40">
                 <label className="label">Category</label>
                 <select
                   className="input bg-white"
@@ -127,7 +128,7 @@ export default function BudgetsPage() {
                   {availableCategories.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
-              <div className="flex-1 min-w-40">
+              <div className="flex-1 sm:min-w-40">
                 <label className="label">Monthly limit</label>
                 <input
                   type="number" required min="1" step="1" className="input"
@@ -137,10 +138,10 @@ export default function BudgetsPage() {
                 />
               </div>
               <div className="flex gap-2">
-                <button type="submit" disabled={saving} className="btn-primary">
+                <button type="submit" disabled={saving} className="btn-primary flex-1 sm:flex-none">
                   {saving ? 'Saving...' : 'Save'}
                 </button>
-                <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">
+                <button type="button" onClick={() => setShowForm(false)} className="btn-secondary flex-1 sm:flex-none">
                   Cancel
                 </button>
               </div>

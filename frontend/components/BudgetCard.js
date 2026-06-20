@@ -30,30 +30,29 @@ export default function BudgetCard({ budget, onDelete }) {
 
   return (
     <div className="card group">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{CATEGORY_ICONS[budget.category]}</span>
-          <div>
-            <p className="font-semibold text-gray-900 text-sm">{budget.category}</p>
+      <div className="flex items-start justify-between mb-4 gap-2">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="text-2xl shrink-0">{CATEGORY_ICONS[budget.category]}</span>
+          <div className="min-w-0">
+            <p className="font-semibold text-gray-900 text-sm truncate">{budget.category}</p>
             <p className="text-xs text-gray-400">
               {new Date(0, budget.month - 1).toLocaleString('default', { month: 'long' })} {budget.year}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusColor}`}>
-            {isExceeded ? 'Exceeded' : isWarning ? `${pct}% used` : `${pct}% used`}
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${statusColor}`}>
+            {isExceeded ? 'Exceeded' : `${pct}% used`}
           </span>
           <button
             onClick={() => onDelete(budget.id)}
-            className="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all text-lg leading-none"
+            className="text-gray-300 hover:text-red-500 active:text-red-500 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all text-lg leading-none p-1"
           >
             ×
           </button>
         </div>
       </div>
 
-      {/* Progress bar */}
       <div className="h-2 bg-gray-100 rounded-full mb-3 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all ${barColor}`}
@@ -61,7 +60,7 @@ export default function BudgetCard({ budget, onDelete }) {
         />
       </div>
 
-      <div className="flex justify-between text-sm">
+      <div className="flex flex-wrap justify-between gap-1 text-sm">
         <span className="text-gray-500">
           <span className="font-semibold text-gray-800">{formatAmount(budget.spent)}</span> spent
         </span>

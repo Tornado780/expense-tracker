@@ -15,14 +15,13 @@ const CATEGORY_COLORS = {
 
 export default function ExpenseForm({ onSuccess }) {
   const [form, setForm] = useState({ description: '', amount: '', category: '', date: '' })
-  const [suggestion, setSuggestion] = useState(null)   // { category, confidence }
+  const [suggestion, setSuggestion] = useState(null)
   const [suggesting, setSuggesting] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [open, setOpen] = useState(false)
   const debounceRef = useRef(null)
 
-  // Live AI suggestion as user types description
   useEffect(() => {
     if (form.description.length < 3) { setSuggestion(null); return }
     clearTimeout(debounceRef.current)
@@ -73,18 +72,17 @@ export default function ExpenseForm({ onSuccess }) {
   return (
     <div>
       {!open ? (
-        <button onClick={() => setOpen(true)} className="btn-primary flex items-center gap-2">
+        <button onClick={() => setOpen(true)} className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
           <span>+</span> Add Expense
         </button>
       ) : (
         <div className="card border-indigo-100 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-900">New Expense</h3>
-            <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+            <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none p-1">×</button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Description with AI suggestion */}
             <div>
               <label className="label">Description</label>
               <input
@@ -93,14 +91,13 @@ export default function ExpenseForm({ onSuccess }) {
                 value={form.description}
                 onChange={e => setForm({ ...form, description: e.target.value })}
               />
-              {/* AI suggestion badge */}
               {suggesting && (
                 <p className="text-xs text-gray-400 mt-1.5 flex items-center gap-1">
                   <span className="animate-spin inline-block">⏳</span> Detecting category...
                 </p>
               )}
               {suggestion && !suggesting && (
-                <div className="mt-2 flex items-center gap-2">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <span className="text-xs text-gray-500">🤖 AI suggests:</span>
                   <button
                     type="button"
@@ -120,7 +117,7 @@ export default function ExpenseForm({ onSuccess }) {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">Amount</label>
                 <input
@@ -155,7 +152,7 @@ export default function ExpenseForm({ onSuccess }) {
 
             {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
 
-            <div className="flex gap-3 pt-1">
+            <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <button type="submit" disabled={loading} className="btn-primary flex-1">
                 {loading ? 'Saving...' : 'Save Expense'}
               </button>
