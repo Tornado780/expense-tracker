@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: expense-tracker-ml
+    runtime: python
+    rootDir: ml-service
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+  - type: web
+    name: expense-tracker-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install && npx prisma generate
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ML_SERVICE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

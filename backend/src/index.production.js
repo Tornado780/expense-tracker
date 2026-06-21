@@ -10,10 +10,22 @@ const alertRoutes = require('./routes/alert.routes')
 
 const app = express()
 
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3001')
+  .split(',')
+  .map(o => o.trim())
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+  origin: (origin, callback) => {
+    // allow requests with no origin (Postman, curl, server-to-server)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true
 }))
+
 app.use(express.json())
 
 const limiter = rateLimit({
@@ -28,7 +40,7 @@ app.use('/api/expenses', expenseRoutes)
 app.use('/api/budgets', budgetRoutes)
 app.use('/api/alerts', alertRoutes)
 
-app.get('/', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
@@ -40,5 +52,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Server running on port ${PORT}`)
+  console.log(`Allowed origins: ${allowedOrigins.join(', ')}`)
 })
